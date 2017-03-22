@@ -8,6 +8,7 @@
 
 #import "GameViewController.h"
 #import <OpenGLES/ES2/glext.h>
+#include <stdlib.h>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -42,6 +43,12 @@ const int WEST_WALL =0;
 const int EAST_WALL =1;
 const int NORTH_WALL =2;
 const int SOUTH_WALL =3;
+
+const int WEST_DIRECTION =0;
+const int EAST_DIRECTION =1;
+const int NORTH_DIRECTION =2;
+const int SOUTH_DIRECTION =3;
+
 
 typedef struct {
     float Position[3];
@@ -234,6 +241,9 @@ GLfloat gCubeVertexData[216] =
     GLKMatrix4 cubeMatrix;
     GLKMatrix3 cubeNormMatrix;
     
+    GLKMatrix4 enemyMatrix;
+    GLKMatrix3 enemyNormMatrix;
+    
     GLKMatrix4 wallMatrices[mazeSize*mazeSize*4];
     GLKMatrix3 wallNormMatrices[mazeSize*mazeSize*4];
     
@@ -338,6 +348,11 @@ GLfloat gCubeVertexData[216] =
     GLuint _enemyVertexBuffer;
     //GLuint _enemyIndexBuffer[2];
     GLuint _enemyIndexBuffer;
+    
+    GLfloat enemyxPos;
+    GLfloat enemyzPos;
+    GLuint enemyDirection;
+    GLfloat enemySpeed;
     //----------------------------------------
     
     //Touch stuff
@@ -416,6 +431,10 @@ GLfloat gCubeVertexData[216] =
     
     _playerXpos=0;
     _playerYpos=0;
+    enemyxPos=0;
+    enemyzPos=0;
+    enemyDirection=NORTH_DIRECTION;
+    enemySpeed =3;
     
     //[self readObjFile:@"monkeyBlock"];
     [self setupVBOs];
@@ -2076,6 +2095,63 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
     cubeMatrix = currentModelViewProjMatrix;
     //-----------------------
     
+    //------------enemy matrix
+    GLKMatrix4 enemyModelViewMatrix =GLKMatrix4MakeTranslation(enemyxPos-7, 0.0f, enemyzPos-7);
+    
+    GLfloat enemyDirectionRotation=0;
+    GLfloat enemyMoveAmount = 0;
+    GLuint currentxTile = enemyxPos/15;
+    GLuint currentzTile = enemyzPos/15;
+    NSLog(@"position %d",currentzTile);
+    
+    switch (enemyDirection) {
+        case NORTH_DIRECTION:
+            enemyDirectionRotation=M_PI;
+            enemyMoveAmount=-enemySpeed*self.timeSinceLastUpdate;
+            if([mazeConnector hasWallAt:SOUTH_WALL row:currentxTile coloumn:currentzTile]&&enemyzPos+enemyMoveAmount<currentzTile*15)
+                enemyDirection = arc4random_uniform(4);
+            else
+                enemyzPos+=enemyMoveAmount;
+            break;
+        case SOUTH_DIRECTION:
+            enemyDirectionRotation=0;
+            enemyMoveAmount=enemySpeed*self.timeSinceLastUpdate;
+            if(enemyzPos+enemyMoveAmount>=15)
+                enemyDirection = arc4random_uniform(4);
+            else
+                enemyzPos+=enemyMoveAmount;
+            break;
+        case WEST_DIRECTION:
+            enemyDirectionRotation=M_PI*1.5;
+            enemyMoveAmount=-enemySpeed*self.timeSinceLastUpdate;
+            if(enemyxPos+enemyMoveAmount<0)
+                enemyDirection = arc4random_uniform(4);
+            else
+                enemyxPos+=enemyMoveAmount;
+            break;
+        case EAST_DIRECTION:
+            enemyDirectionRotation=M_PI/2;
+            enemyMoveAmount=enemySpeed*self.timeSinceLastUpdate;
+            if(enemyxPos+enemyMoveAmount>15)
+                enemyDirection = arc4random_uniform(4);
+            else
+                enemyxPos+=enemyMoveAmount;
+            break;
+            
+        default:
+            enemyDirectionRotation=0;
+            break;
+    }
+    enemyModelViewMatrix = GLKMatrix4Rotate(enemyModelViewMatrix, enemyDirectionRotation, 0.0f, 1.0f, 0.0f);
+    enemyModelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, enemyModelViewMatrix);
+    enemyModelViewMatrix = GLKMatrix4Multiply(viewMatrix, enemyModelViewMatrix);
+    enemyModelViewMatrix = GLKMatrix4Scale(enemyModelViewMatrix, 5, 5, 5);
+    
+    GLKMatrix4 currentEnemyModelViewProjMatrix = GLKMatrix4Multiply(projectionMatrix, enemyModelViewMatrix);
+    enemyNormMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(enemyModelViewMatrix), NULL);
+    enemyMatrix = currentEnemyModelViewProjMatrix;
+    //-----------------------
+    
     
     //setup floor matrices
     for(int i=0; i<mazeSize; i++){
@@ -2127,9 +2203,9 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
     glUseProgram(_program);
     
     // Set up uniforms
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, cubeMatrix.m);
-    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, cubeNormMatrix.m);
-    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, 0, cubeMatrix.m);
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, enemyMatrix.m);
+    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, enemyNormMatrix.m);
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, 0, enemyMatrix.m);
     
     // Select VBO and draw
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _enemyIndexBuffer);
