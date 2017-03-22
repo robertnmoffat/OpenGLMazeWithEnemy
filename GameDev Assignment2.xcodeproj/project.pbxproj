@@ -15,8 +15,6 @@
 		BE01623E1E68D35E00FDC7D5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE01623C1E68D35E00FDC7D5 /* Main.storyboard */; };
 		BE0162401E68D35E00FDC7D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE01623F1E68D35E00FDC7D5 /* Assets.xcassets */; };
 		BE0162431E68D35E00FDC7D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE0162411E68D35E00FDC7D5 /* LaunchScreen.storyboard */; };
-		BE01624F1E68D3C600FDC7D5 /* DisjointSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE01624B1E68D3C600FDC7D5 /* DisjointSet.cpp */; };
-		BE0162501E68D3C600FDC7D5 /* maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE01624D1E68D3C600FDC7D5 /* maze.cpp */; };
 		BE4DBA041E6D5CEC00A2E371 /* GameObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BE4DBA031E6D5CEC00A2E371 /* GameObject.m */; };
 		BE50C2551E73D8B40066D6B7 /* blocked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BE50C2521E73D8B40066D6B7 /* blocked.jpg */; };
 		BE50C2561E73D8B40066D6B7 /* both.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BE50C2531E73D8B40066D6B7 /* both.jpg */; };
@@ -30,6 +28,8 @@
 		BEFF7C301E812B2C00854D3F /* monkeyBlock.obj in Resources */ = {isa = PBXBuildFile; fileRef = BEFF7C2F1E812B2C00854D3F /* monkeyBlock.obj */; };
 		BEFF7C321E81E8A700854D3F /* monkey.obj in Resources */ = {isa = PBXBuildFile; fileRef = BEFF7C311E81E8A700854D3F /* monkey.obj */; };
 		BEFF7C341E81F15100854D3F /* Magikarp.obj in Resources */ = {isa = PBXBuildFile; fileRef = BEFF7C331E81F15100854D3F /* Magikarp.obj */; };
+		BEFF7C391E831ACC00854D3F /* DisjointSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEFF7C351E831ACC00854D3F /* DisjointSet.cpp */; };
+		BEFF7C3A1E831ACC00854D3F /* maze.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEFF7C371E831ACC00854D3F /* maze.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,10 +45,6 @@
 		BE01623F1E68D35E00FDC7D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BE0162421E68D35E00FDC7D5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BE0162441E68D35E00FDC7D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BE01624B1E68D3C600FDC7D5 /* DisjointSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DisjointSet.cpp; path = ../../COMP8051Asst2Start/DisjointSet.cpp; sourceTree = "<group>"; };
-		BE01624C1E68D3C600FDC7D5 /* DisjointSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DisjointSet.h; path = ../../COMP8051Asst2Start/DisjointSet.h; sourceTree = "<group>"; };
-		BE01624D1E68D3C600FDC7D5 /* maze.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = maze.cpp; path = ../../COMP8051Asst2Start/maze.cpp; sourceTree = "<group>"; };
-		BE01624E1E68D3C600FDC7D5 /* maze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maze.h; path = ../../COMP8051Asst2Start/maze.h; sourceTree = "<group>"; };
 		BE4DBA021E6D58A900A2E371 /* GameObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameObject.h; sourceTree = "<group>"; };
 		BE4DBA031E6D5CEC00A2E371 /* GameObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameObject.m; sourceTree = "<group>"; };
 		BE50C2521E73D8B40066D6B7 /* blocked.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = blocked.jpg; sourceTree = "<group>"; };
@@ -65,6 +61,10 @@
 		BEFF7C2F1E812B2C00854D3F /* monkeyBlock.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monkeyBlock.obj; sourceTree = "<group>"; };
 		BEFF7C311E81E8A700854D3F /* monkey.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monkey.obj; sourceTree = "<group>"; };
 		BEFF7C331E81F15100854D3F /* Magikarp.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Magikarp.obj; sourceTree = "<group>"; };
+		BEFF7C351E831ACC00854D3F /* DisjointSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DisjointSet.cpp; path = COMP8051Asst2Start/DisjointSet.cpp; sourceTree = "<group>"; };
+		BEFF7C361E831ACC00854D3F /* DisjointSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DisjointSet.h; path = COMP8051Asst2Start/DisjointSet.h; sourceTree = "<group>"; };
+		BEFF7C371E831ACC00854D3F /* maze.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = maze.cpp; path = COMP8051Asst2Start/maze.cpp; sourceTree = "<group>"; };
+		BEFF7C381E831ACC00854D3F /* maze.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maze.h; path = COMP8051Asst2Start/maze.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,10 +135,10 @@
 		BE01624A1E68D37900FDC7D5 /* MazeGen */ = {
 			isa = PBXGroup;
 			children = (
-				BE01624B1E68D3C600FDC7D5 /* DisjointSet.cpp */,
-				BE01624C1E68D3C600FDC7D5 /* DisjointSet.h */,
-				BE01624D1E68D3C600FDC7D5 /* maze.cpp */,
-				BE01624E1E68D3C600FDC7D5 /* maze.h */,
+				BEFF7C351E831ACC00854D3F /* DisjointSet.cpp */,
+				BEFF7C361E831ACC00854D3F /* DisjointSet.h */,
+				BEFF7C371E831ACC00854D3F /* maze.cpp */,
+				BEFF7C381E831ACC00854D3F /* maze.h */,
 				BEB583931E6BCD0D00C86E14 /* MazeConnector.mm */,
 				BEB583951E6BCD3A00C86E14 /* MazeConnector.h */,
 			);
@@ -240,13 +240,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE01624F1E68D3C600FDC7D5 /* DisjointSet.cpp in Sources */,
+				BEFF7C391E831ACC00854D3F /* DisjointSet.cpp in Sources */,
 				BE4DBA041E6D5CEC00A2E371 /* GameObject.m in Sources */,
 				BE0162341E68D35E00FDC7D5 /* AppDelegate.m in Sources */,
 				BEB583941E6BCD0D00C86E14 /* MazeConnector.mm in Sources */,
 				BE99D2E91E6DF4020050AA8F /* Floor.m in Sources */,
 				BE01623B1E68D35E00FDC7D5 /* GameViewController.m in Sources */,
-				BE0162501E68D3C600FDC7D5 /* maze.cpp in Sources */,
+				BEFF7C3A1E831ACC00854D3F /* maze.cpp in Sources */,
 				BE0162311E68D35E00FDC7D5 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
