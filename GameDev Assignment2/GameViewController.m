@@ -325,6 +325,19 @@ GLfloat gCubeVertexData[216] =
     GLuint _cube2VertexBuffer;
     //GLuint _texVertexBuffer;
     GLuint _cubeIndexBuffer;
+    
+    
+    //              Custom File Loaded Enemy
+    // GLES buffer IDs
+    GLuint _enemyVertexBuffers[3];
+    // Shape vertices, etc. and textures
+    GLfloat *enemyVertices, *enemyNormals;//, *cubeTexCoords;
+    GLuint enemyNumIndices, *enemyIndices, *enemyNormIndices;
+    
+    GLuint _enemyVertexArray;
+    GLuint _enemyVertexBuffer;
+    //GLuint _enemyIndexBuffer[2];
+    GLuint _enemyIndexBuffer;
     //----------------------------------------
     
     //Touch stuff
@@ -352,8 +365,8 @@ GLfloat gCubeVertexData[216] =
     
     
     //enemy stuff
-    Vertex enemyVertices[5];
-    GLubyte enemyIndices[5];
+    //Vertex enemyVertices[5];
+    //GLubyte enemyIndices[5];
     
     //int mazeSize;
     
@@ -404,7 +417,7 @@ GLfloat gCubeVertexData[216] =
     _playerXpos=0;
     _playerYpos=0;
     
-    [self readObjFile:@"monkeyBlock"];
+    //[self readObjFile:@"monkeyBlock"];
     [self setupVBOs];
     [self setupGL];
 }
@@ -462,7 +475,7 @@ GLfloat gCubeVertexData[216] =
 /*
     read in contents of obj file
  */
--(void)readObjFile:(NSString *)fileName{
+void readObjFile( NSString* fileName, NSMutableArray* vertexMutArray, NSMutableArray* normalMutArray, NSMutableArray* indexMutArray, NSMutableArray* normIndexMutArray){
     NSString *filepath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"obj"];
     NSError *error;
     NSString *fileContents = [NSString stringWithContentsOfFile:filepath encoding:NSUTF8StringEncoding error:&error];
@@ -471,18 +484,11 @@ GLfloat gCubeVertexData[216] =
         NSLog(@"Error reading file: %@", error.localizedDescription);
     
     // maybe for debugging...
-    NSLog(@"contents: %@", fileContents);
+    //NSLog(@"contents: %@", fileContents);
     
     NSArray *listArray = [fileContents componentsSeparatedByString:@"\n"];
-    NSLog(@"items = %lu", (unsigned long)[listArray count]);
+    //NSLog(@"items = %lu", (unsigned long)[listArray count]);
     
-    //expandable array for holding the vertex data
-    NSMutableArray *vertexMutArray = [NSMutableArray array];
-    NSMutableArray *normalMutArray = [NSMutableArray array];
-    NSMutableArray *indexMutArray = [NSMutableArray array];
-    //number formatter for pulling data from file string
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterDecimalStyle;
     
     NSArray *stringArray = [fileContents componentsSeparatedByString:@"\n"];
     for(int i=4; i<[stringArray count]; i++){
@@ -517,18 +523,22 @@ GLfloat gCubeVertexData[216] =
             NSArray *vertices = [stringWithoutf componentsSeparatedByString:@" "];
             //offset by 1 to make up for first space
             for(int j=1; j<[vertices count]; j++){
-                NSString *stringVertex = [vertices objectAtIndex:j];
+                NSString *stringIndicesWithSlashes = [vertices objectAtIndex:j];
+                NSArray *indicesVertAndNorm = [stringIndicesWithSlashes componentsSeparatedByString:@"//"];
                 //GLfloat floatVertex = [[formatter numberFromString:stringVertex] floatValue];
-                [indexMutArray addObject:stringVertex];
+                [indexMutArray addObject:[indicesVertAndNorm objectAtIndex:0]];
+                [normIndexMutArray addObject:[indicesVertAndNorm objectAtIndex:1]];
                 //NSLog(@"%@",[vectors objectAtIndex:j]);
             }
         }
     }
-    NSLog(@"vertexMutArray:%@", vertexMutArray);
-    NSLog(@"Vertex count: %lu", (unsigned long)[vertexMutArray count]);
-    NSLog(@"Normal count: %lu", (unsigned long)[normalMutArray count]);
+//    NSLog(@"vertexMutArray:%@", vertexMutArray);
+//    NSLog(@"Vertex count: %lu", (unsigned long)[vertexMutArray count]);
+//    NSLog(@"Normal count: %lu", (unsigned long)[normalMutArray count]);
     
-    [stringArray count];
+    
+    
+    //[stringArray count];
     //NSLog(@"%c", firstLetter);
 }
 
@@ -836,6 +846,7 @@ GLfloat gCubeVertexData[216] =
     int cubeNumVerts;
     //numIndices = generateSphere(50, 1, &vertices, &normals, &texCoords, &indices, &numVerts);
     cubeNumIndices = generateCube(1.5, &cubeVertices, &cubeNormals, &cubeTexCoords, &cubeIndices, &cubeNumVerts);
+    
 
     // Set up GL buffers
     glBindBuffer(GL_ARRAY_BUFFER, _cubeVertexBuffers[0]);
@@ -855,6 +866,40 @@ GLfloat gCubeVertexData[216] =
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _cubeIndexBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*cubeNumIndices, cubeIndices, GL_STATIC_DRAW);
+    //--------------------------------------------------------------
+    //----------------------------------------------
+    glGenVertexArraysOES(1, &_enemyVertexArray);
+    glBindVertexArrayOES(_enemyVertexArray);
+    
+    glGenBuffers(3, _enemyVertexBuffers);
+    glGenBuffers(1, &_enemyIndexBuffer);
+    
+    // Generate vertices
+    int enemyNumVerts;
+    
+    enemyNumIndices = generateCustom(0.5, &enemyVertices, &enemyNormals, &enemyIndices, &enemyNormIndices, &enemyNumVerts, @"monkey");
+    
+    // Set up GL buffers
+    glBindBuffer(GL_ARRAY_BUFFER, _enemyVertexBuffers[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*3*enemyNumVerts, enemyVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), BUFFER_OFFSET(0));
+    
+    glBindBuffer(GL_ARRAY_BUFFER, _enemyVertexBuffers[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*3*enemyNumVerts, enemyNormals, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), BUFFER_OFFSET(0));
+    
+//    glBindBuffer(GL_ARRAY_BUFFER, _enemyVertexBuffers[2]);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*3*enemyNumVerts, enemyTexCoords, GL_STATIC_DRAW);
+//    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+//    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), BUFFER_OFFSET(0));
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _enemyIndexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*enemyNumIndices, enemyIndices, GL_STATIC_DRAW);
+    
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _enemyIndexBuffer[1]);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int)*enemyNumIndices, enemyNormIndices, GL_STATIC_DRAW);
     //--------------------------------------------------------------
     
     //my added setup. usure of
@@ -1682,92 +1727,120 @@ int generateWestWall(float scale, GLfloat **vertices, GLfloat **normals,
     return numIndices;
 }
 
-int generateCustom(float scale, GLfloat **vertices, GLfloat **normals,
-                 GLfloat **texCoords, GLuint **indices, int *numVerts, GLfloat *cubeVerts, GLfloat *cubeNormals)
+/*
+    Generate custom VBO based on data loaded from file
+ */
+int generateCustom(float scale, GLfloat **vertices, GLfloat **normals, GLuint **indices, GLuint **normIndices, int *numVerts, NSString *fileName)
 {
+    NSMutableArray *vertexMutArray;
+    NSMutableArray *normalMutArray;
+    NSMutableArray *indexMutArray;
+    NSMutableArray *indexNormMutArray;
+    
+    //expandable array for holding the vertex data
+    vertexMutArray = [NSMutableArray array];
+    normalMutArray = [NSMutableArray array];
+    indexMutArray = [NSMutableArray array];
+    indexNormMutArray = [NSMutableArray array];
+    
+    //read file and save data into passed mutable arrays.
+    readObjFile(fileName, vertexMutArray, normalMutArray, indexMutArray, indexNormMutArray);
+    
+    GLfloat *cubeVerts;
+    GLfloat *cubeNormals;
+   
     int i;
-    int numVertices = sizeof(cubeVerts)/sizeof(GLfloat);
-    int numIndices = 36;
+    //int numVertices = sizeof(cubeVerts)/sizeof(GLfloat);
+    int numVertices = [vertexMutArray count];
+    int numNormals = [normalMutArray count];
+    //bad lazy coding. dont want to go through removing *3 from earlier code
+    //numVerts = numVertices/3;
+    int numIndices = [indexMutArray count];
     
+    NSLog(@"Num Vertices: %d",numVertices);
     
-    GLfloat cubeTex[] =
-    {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f,
-    };
+    //number formatter for pulling data from file string
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    
     
     // Allocate memory for buffers
+    /*
+        Create vertex array
+     */
     if ( vertices != NULL )
     {
-        *vertices = malloc ( sizeof ( GLfloat ) * 3 * numVertices );
-        memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
+        *vertices = malloc ( sizeof ( GLfloat ) * numVertices );
+        //memcpy ( *vertices, cubeVerts, sizeof ( cubeVerts ) );
         
-        for ( i = 0; i < numVertices * 3; i++ )
+        for ( i = 0; i < numVertices; i++ )
         {
+            NSString *currentVertString = [vertexMutArray objectAtIndex:i];
+            //( *vertices ) [i] = [[formatter numberFromString:currentVertString] floatValue];
+            float currentVertFloat = [currentVertString floatValue];
+            ( *vertices ) [i] = currentVertFloat;
             ( *vertices ) [i] *= scale;
+            //NSLog(@"%.4f", (*vertices)[i]);
         }
     }
     
+    /*
+        Create normal array
+     */
     if ( normals != NULL )
     {
-        *normals = malloc ( sizeof ( GLfloat ) * 3 * numVertices );
-        memcpy ( *normals, cubeNormals, sizeof ( cubeNormals ) );
+        *normals = malloc ( sizeof ( GLfloat ) * numNormals );
+        //memcpy ( *normals, cubeNormals, sizeof ( cubeNormals ) );
+        for ( i = 0; i < numNormals; i++ )
+        {
+            NSString *currentNormString = [normalMutArray objectAtIndex:i];
+            //( *vertices ) [i] = [[formatter numberFromString:currentVertString] floatValue];
+            float currentNormFloat = [currentNormString floatValue];
+            ( *normals ) [i] = currentNormFloat;
+            ( *normals ) [i] *= scale;
+            //NSLog(@"%.4f", (*vertices)[i]);
+        }
     }
     
-    if ( texCoords != NULL )
-    {
-        *texCoords = malloc ( sizeof ( GLfloat ) * 2 * numVertices );
-        memcpy ( *texCoords, cubeTex, sizeof ( cubeTex ) ) ;
-    }
+//    if ( texCoords != NULL )
+//    {
+//        *texCoords = malloc ( sizeof ( GLfloat ) * 2 * numVertices );
+//        memcpy ( *texCoords, cubeTex, sizeof ( cubeTex ) ) ;
+//    }
     
     
     // Generate the indices
     if ( indices != NULL )
     {
-        GLuint cubeIndices[] =
-        {
-            0, 2, 1,
-            0, 3, 2,
-            4, 5, 6,
-            4, 6, 7,
-            8, 9, 10,
-            8, 10, 11,
-            12, 15, 14,
-            12, 14, 13,
-            16, 17, 18,
-            16, 18, 19,
-            20, 23, 22,
-            20, 22, 21
-        };
-        
         *indices = malloc ( sizeof ( GLuint ) * numIndices );
-        memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
+        //memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
+        for ( i = 0; i < numNormals; i++ )
+        {
+            NSString *currentIndexString = [indexMutArray objectAtIndex:i];
+            //( *vertices ) [i] = [[formatter numberFromString:currentVertString] floatValue];
+            int currentIndexInt = [currentIndexString intValue];
+            ( *indices ) [i] = currentIndexInt;
+            //NSLog(@"%.4f", (*vertices)[i]);
+        }
+    }
+    
+    // Generate the indices
+    if ( normIndices != NULL )
+    {
+        *normIndices = malloc ( sizeof ( GLuint ) * numIndices );
+        //memcpy ( *indices, cubeIndices, sizeof ( cubeIndices ) );
+        for ( i = 0; i < numNormals; i++ )
+        {
+            NSString *currentIndexString = [indexNormMutArray objectAtIndex:i];
+            //( *vertices ) [i] = [[formatter numberFromString:currentVertString] floatValue];
+            int currentIndexInt = [currentIndexString intValue];
+            ( *normIndices ) [i] = currentIndexInt;
+            //NSLog(@"%.4f", (*vertices)[i]);
+        }
     }
     
     if (numVerts != NULL)
-        *numVerts = numVertices;
+        *numVerts = numVertices/3;
     return numIndices;
 }
 
@@ -1993,7 +2066,7 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
     //------------cube matrix
     GLKMatrix4 cubecurrentFloorModelViewMatrix =GLKMatrix4MakeTranslation(0, 5.0f, 0.0f);
     
-    cubecurrentFloorModelViewMatrix = GLKMatrix4Rotate(cubecurrentFloorModelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
+    //cubecurrentFloorModelViewMatrix = GLKMatrix4Rotate(cubecurrentFloorModelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
     cubecurrentFloorModelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, cubecurrentFloorModelViewMatrix);
     cubecurrentFloorModelViewMatrix = GLKMatrix4Multiply(viewMatrix, cubecurrentFloorModelViewMatrix);
     cubecurrentFloorModelViewMatrix = GLKMatrix4Scale(cubecurrentFloorModelViewMatrix, 10, 10, 10);
@@ -2035,8 +2108,22 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
     
     glBindTexture(GL_TEXTURE_2D, crateTexture);
     
+//    // Select VAO and shaders
+//    glBindVertexArrayOES(_cube2VertexArray);
+//    glUseProgram(_program);
+//    
+//    // Set up uniforms
+//    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, cubeMatrix.m);
+//    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, cubeNormMatrix.m);
+//    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, 0, cubeMatrix.m);
+//    
+//    // Select VBO and draw
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _cubeIndexBuffer);
+//    glDrawElements(GL_TRIANGLES, cubeNumIndices, GL_UNSIGNED_INT, 0);
+    
+    //-----------------------DRAW ENEMY
     // Select VAO and shaders
-    glBindVertexArrayOES(_cube2VertexArray);
+    glBindVertexArrayOES(_enemyVertexArray);
     glUseProgram(_program);
     
     // Set up uniforms
@@ -2045,10 +2132,9 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEW_MATRIX], 1, 0, cubeMatrix.m);
     
     // Select VBO and draw
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _cubeIndexBuffer);
-    glDrawElements(GL_TRIANGLES, cubeNumIndices, GL_UNSIGNED_INT, 0);
-    
-    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _enemyIndexBuffer);
+    glDrawElements(GL_TRIANGLES, enemyNumIndices, GL_UNSIGNED_INT, 0);
+    //------------------------
     
     
     for(int i=0; i<mazeSize; i++){
@@ -2075,6 +2161,8 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
             // Select VBO and draw
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _floorIndexBuffer);
             glDrawElements(GL_TRIANGLES, floorNumIndices, GL_UNSIGNED_INT, 0);
+            
+            
             
             for(int wallside=0; wallside<4; wallside++){
                 if([mazeConnector hasWallAt:wallside row:i coloumn:j]){

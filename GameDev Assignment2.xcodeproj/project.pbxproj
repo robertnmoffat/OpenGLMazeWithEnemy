@@ -28,6 +28,8 @@
 		BE99D2E91E6DF4020050AA8F /* Floor.m in Sources */ = {isa = PBXBuildFile; fileRef = BE99D2E81E6DF4020050AA8F /* Floor.m */; };
 		BEB583941E6BCD0D00C86E14 /* MazeConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = BEB583931E6BCD0D00C86E14 /* MazeConnector.mm */; };
 		BEFF7C301E812B2C00854D3F /* monkeyBlock.obj in Resources */ = {isa = PBXBuildFile; fileRef = BEFF7C2F1E812B2C00854D3F /* monkeyBlock.obj */; };
+		BEFF7C321E81E8A700854D3F /* monkey.obj in Resources */ = {isa = PBXBuildFile; fileRef = BEFF7C311E81E8A700854D3F /* monkey.obj */; };
+		BEFF7C341E81F15100854D3F /* Magikarp.obj in Resources */ = {isa = PBXBuildFile; fileRef = BEFF7C331E81F15100854D3F /* Magikarp.obj */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,8 @@
 		BEB583931E6BCD0D00C86E14 /* MazeConnector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MazeConnector.mm; sourceTree = "<group>"; };
 		BEB583951E6BCD3A00C86E14 /* MazeConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MazeConnector.h; sourceTree = "<group>"; };
 		BEFF7C2F1E812B2C00854D3F /* monkeyBlock.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monkeyBlock.obj; sourceTree = "<group>"; };
+		BEFF7C311E81E8A700854D3F /* monkey.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = monkey.obj; sourceTree = "<group>"; };
+		BEFF7C331E81F15100854D3F /* Magikarp.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Magikarp.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +97,8 @@
 		BE01622E1E68D35E00FDC7D5 /* GameDev Assignment2 */ = {
 			isa = PBXGroup;
 			children = (
+				BEFF7C331E81F15100854D3F /* Magikarp.obj */,
+				BEFF7C311E81E8A700854D3F /* monkey.obj */,
 				BEFF7C2F1E812B2C00854D3F /* monkeyBlock.obj */,
 				BE50C2601E73FFA20066D6B7 /* south.jpg */,
 				BE50C25E1E73FF9B0066D6B7 /* north.jpg */,
@@ -215,9 +221,11 @@
 				BE01623E1E68D35E00FDC7D5 /* Main.storyboard in Resources */,
 				BE0162381E68D35E00FDC7D5 /* Shader.vsh in Resources */,
 				BE50C2561E73D8B40066D6B7 /* both.jpg in Resources */,
+				BEFF7C321E81E8A700854D3F /* monkey.obj in Resources */,
 				BE0162401E68D35E00FDC7D5 /* Assets.xcassets in Resources */,
 				BE50C2611E73FFA20066D6B7 /* south.jpg in Resources */,
 				BE50C25D1E73FDBE0066D6B7 /* left.jpg in Resources */,
+				BEFF7C341E81F15100854D3F /* Magikarp.obj in Resources */,
 				BEFF7C301E812B2C00854D3F /* monkeyBlock.obj in Resources */,
 				BE0162431E68D35E00FDC7D5 /* LaunchScreen.storyboard in Resources */,
 				BE0162361E68D35E00FDC7D5 /* Shader.fsh in Resources */,
