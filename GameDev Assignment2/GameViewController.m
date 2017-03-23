@@ -431,10 +431,10 @@ GLfloat gCubeVertexData[216] =
     
     _playerXpos=0;
     _playerYpos=0;
-    enemyxPos=0;
-    enemyzPos=0;
+    enemyxPos=7.5;
+    enemyzPos=7.5;
     enemyDirection=NORTH_DIRECTION;
-    enemySpeed =3;
+    enemySpeed =10;
     
     //[self readObjFile:@"monkeyBlock"];
     [self setupVBOs];
@@ -2101,14 +2101,22 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
     GLfloat enemyDirectionRotation=0;
     GLfloat enemyMoveAmount = 0;
     GLuint currentxTile = enemyxPos/15;
-    GLuint currentzTile = enemyzPos/15;
-    NSLog(@"position %d",currentzTile);
+    int currentzTile = floorf(enemyzPos/15);
+    NSLog(@"currentz:%d",currentzTile);
+    //NSLog(@"position %d,%d", currentxTile, currentzTile);
+    //NSLog(@"south wal:%d,North:%d", [mazeConnector hasWallAt:NORTH_WALL row:-1*(currentzTile-1) coloumn:currentxTile],[mazeConnector hasWallAt:SOUTH_WALL row:-1*(currentzTile-1) coloumn:currentxTile]);
     
+    GLuint hitboxDist = 2;
+    
+    /*
+        Move enemy and check for wall collisions
+        if wall collision turn in random direction
+     */
     switch (enemyDirection) {
         case NORTH_DIRECTION:
             enemyDirectionRotation=M_PI;
             enemyMoveAmount=-enemySpeed*self.timeSinceLastUpdate;
-            if([mazeConnector hasWallAt:SOUTH_WALL row:currentxTile coloumn:currentzTile]&&enemyzPos+enemyMoveAmount<currentzTile*15)
+            if(([mazeConnector hasWallAt:SOUTH_WALL row:-1*(currentzTile) coloumn:currentxTile]&&enemyzPos+enemyMoveAmount<(currentzTile)*15)||enemyzPos+enemyMoveAmount>mazeSize*15)
                 enemyDirection = arc4random_uniform(4);
             else
                 enemyzPos+=enemyMoveAmount;
@@ -2116,7 +2124,7 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
         case SOUTH_DIRECTION:
             enemyDirectionRotation=0;
             enemyMoveAmount=enemySpeed*self.timeSinceLastUpdate;
-            if(enemyzPos+enemyMoveAmount>=15)
+            if(([mazeConnector hasWallAt:NORTH_WALL row:-1*(currentzTile) coloumn:currentxTile]&&enemyzPos+enemyMoveAmount>=currentzTile*15+15-hitboxDist)||enemyzPos+enemyMoveAmount>=15)
                 enemyDirection = arc4random_uniform(4);
             else
                 enemyzPos+=enemyMoveAmount;
@@ -2124,7 +2132,7 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
         case WEST_DIRECTION:
             enemyDirectionRotation=M_PI*1.5;
             enemyMoveAmount=-enemySpeed*self.timeSinceLastUpdate;
-            if(enemyxPos+enemyMoveAmount<0)
+            if([mazeConnector hasWallAt:EAST_WALL row:-1*currentzTile coloumn:currentxTile]&&enemyxPos+enemyMoveAmount<currentxTile*15+hitboxDist)
                 enemyDirection = arc4random_uniform(4);
             else
                 enemyxPos+=enemyMoveAmount;
@@ -2132,7 +2140,7 @@ int generateCube(float scale, GLfloat **vertices, GLfloat **normals,
         case EAST_DIRECTION:
             enemyDirectionRotation=M_PI/2;
             enemyMoveAmount=enemySpeed*self.timeSinceLastUpdate;
-            if(enemyxPos+enemyMoveAmount>15)
+            if([mazeConnector hasWallAt:WEST_WALL row:-1*currentzTile coloumn:currentxTile]&&enemyxPos+enemyMoveAmount>currentxTile*15+15-hitboxDist)
                 enemyDirection = arc4random_uniform(4);
             else
                 enemyxPos+=enemyMoveAmount;
